@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying TriKD manuscript when using this code."
+type: software
+title: "TriKD: A Unified Triple-Distillation Framework for Asymmetric Food Image Retrieval"
+authors:
+  - family-names: Yang
+    given-names: Bolin
+  - family-names: Wang
+    given-names: Yihan
+  - family-names: Zhang
+    given-names: Shijie
+  - family-names: Peng
+    given-names: Zhaoyi
+  - family-names: Wang
+    given-names: Xuchuan
+  - family-names: Yao
+    given-names: Tao
+  - family-names: Sheng
+    given-names: Guorui

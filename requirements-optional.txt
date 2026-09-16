@@ -1,0 +1,3 @@
+# Optional compiled ranking evaluator; the default NumPy evaluator needs neither.
+Cython>=3.0,<4
+setuptools>=68

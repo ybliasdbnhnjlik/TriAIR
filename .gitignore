@@ -1,0 +1,38 @@
+# Python and native build products
+__pycache__/
+*.py[cod]
+*.so
+*.o
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+AIR_Distiller/utils/rank_cylib/*.c
+
+# Environments and local configuration
+.venv/
+venv/
+.env
+.env.*
+.idea/
+.vscode/
+.DS_Store
+
+# Data, checkpoints and experiment outputs
+/data/
+/checkpoints/
+/outputs/
+/log*/
+/wandb/
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.log
+
+# Research-only material
+/archive/
+/literature-search-*/
+/ccfa-review-reports/
+*_IMPLEMENTATION.md
