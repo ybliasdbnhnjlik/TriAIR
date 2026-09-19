@@ -4,15 +4,15 @@ All YAML files inherit [defaults.py](../AIR_Distiller/config/defaults.py).
 Use `--cfg <file>` followed by optional `KEY VALUE` pairs. Effective settings
 are saved with each run. Training and evaluation use the same method identifier.
 
-## TriKD
+## TriAIR
 
-The main configurations are `Training_Configs/{Food101,Food172,InShop,SOP}/<pair>/TriKD.yaml`.
+The main configurations are `Training_Configs/{Food101,Food172,InShop,SOP}/<pair>/TriAIR.yaml`.
 Each dataset provides ResNet101→ResNet18, ResNet101→MobileNetV3-Small and
 Swin-V2-Small→ResNet18, at teacher/student resolutions 256×256 / 64×64.
 
 | Setting | Meaning |
 | --- | --- |
-| `DISTILLER.TYPE: TriKD` | Instantiate TriKD. |
+| `DISTILLER.TYPE: TriAIR` | Instantiate TriAIR. |
 | `SOLVER.TRAINER: kd` | Use supervised and distillation loaders. |
 | `D3.TOPK` | Teacher-neighborhood size for RSD, including the first entry. |
 | `D3.ALPHA/BETA/GAMMA` | Feature, hard-order and easy-order terms inside RSD. |
@@ -29,7 +29,7 @@ Swin-V2-Small→ResNet18, at teacher/student resolutions 256×256 / 64×64.
 
 `UGD.RA_*` and `D3_*` are historical implementation names. They do not introduce
 extra paper components. Legacy scalar-RA options remain loadable for older
-configurations; the main TriKD YAML files explicitly select directional mode.
+configurations; the main TriAIR YAML files explicitly select directional mode.
 
 `loss_kd` already contains the weighted RSD and DMGD terms. `loss_kd_d3` and
 `loss_kd_ugd` are diagnostics and must not be added to the objective again.
@@ -43,11 +43,11 @@ refer to directional DMGD.
 
 | Filename | Global alignment | RSD | Local DMGD | LSD |
 | --- | --- | --- | --- | --- |
-| `TriKD_A1_Lf.yaml` | On | Off | Off | Off |
-| `TriKD_A2_Lf_RSD.yaml` | On | On | Off | Off |
-| `TriKD_A2_Lf_RA_UGD.yaml` | On | Off | On | Off |
-| `TriKD_A3_Lf_RSD_MGD.yaml` | On | On | On | Off |
-| `TriKD_A4_Lf_RSD_MGD_LSD.yaml` | On | On | On | On |
+| `TriAIR_A1_Lf.yaml` | On | Off | Off | Off |
+| `TriAIR_A2_Lf_RSD.yaml` | On | On | Off | Off |
+| `TriAIR_A2_Lf_RA_UGD.yaml` | On | Off | On | Off |
+| `TriAIR_A3_Lf_RSD_MGD.yaml` | On | On | On | Off |
+| `TriAIR_A4_Lf_RSD_MGD_LSD.yaml` | On | On | On | On |
 
 Cross-entropy and triplet settings are inherited from the corresponding YAML.
 The ablations disable losses through their coefficients; they do not promise

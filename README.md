@@ -1,10 +1,10 @@
-# TriKD
+# TriAIR
 
-**A Unified Triple-Distillation Framework for Asymmetric Food Image Retrieval**
+**Triple-Level Knowledge Distillation for Cross-Resolution Asymmetric Food Image Retrieval**
 
 [中文说明](README.zh-CN.md) · [Dataset preparation](docs/DATASETS.md) · [Configurations](docs/CONFIGURATIONS.md) · [Reproducibility](docs/REPRODUCIBILITY.md)
 
-TriKD trains a lightweight, low-resolution **query student** to retrieve images
+TriAIR trains a lightweight, low-resolution **query student** to retrieve images
 from a gallery encoded by a frozen, high-resolution **teacher**. It combines
 three supervision branches:
 
@@ -14,12 +14,16 @@ three supervision branches:
 | Directional Middle Level Guidance Distillation (DMGD) | `ugd_loss`, `UGD.RA_MODE: directional` | Align global and selected local features, relaxing local alignment along the teacher's downsampling direction. |
 | Logit-Standardization Distillation (LSD) | `teacher_classifier_lsd_loss`, `UGD.LSD_*` | Align standardized class distributions using the same frozen teacher classifier. |
 
-The implementation class and `DISTILLER.TYPE` identifier are **`TriKD`**.
+The implementation class and `DISTILLER.TYPE` identifier are **`TriAIR`**.
 The main code is
-[AIR_Distiller/distillers/TriKD.py](AIR_Distiller/distillers/TriKD.py).
+[AIR_Distiller/distillers/TriAIR.py](AIR_Distiller/distillers/TriAIR.py).
 Training also uses the configured cross-entropy and triplet losses.
 
-This release contains TriKD configurations for **Food101, Food172, InShop and
+TriAIR was originally released as TriKD. Saved configurations using
+`DISTILLER.TYPE: TriKD` and imports from `distillers.TriKD` remain supported.
+New configurations use `TriAIR.yaml` and write to `outputs/TriAIR/`.
+
+This release contains TriAIR configurations for **Food101, Food172, InShop and
 SOP**, together with the AIR-Distiller comparison methods: VanillaKD, FitNet,
 CC, RKD, PKT, CSD, ROP, RAML, D3 and UGD. Additional CUB200/MSMT17 configurations
 are inherited baselines. Datasets and trained checkpoints are supplied separately.
@@ -90,13 +94,13 @@ compatible local ImageNet checkpoint, or
 `DISTILLER.STUDENT_PRETRAIN_CHOICE False` to train from scratch. A trained
 retrieval teacher is required for distillation.
 
-## Train TriKD
+## Train TriAIR
 
 Food101, ResNet101 teacher at 256×256 → ResNet18 student at 64×64:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
-  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriKD.yaml \
+  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriAIR.yaml \
   OUTPUT_DIR.EXPERIMENT_NAME food101_r101_r18
 ```
 
@@ -104,7 +108,7 @@ Food172 uses the corresponding config:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
-  --cfg Training_Configs/Food172/ResNet101_256x256_ResNet18_64x64/TriKD.yaml \
+  --cfg Training_Configs/Food172/ResNet101_256x256_ResNet18_64x64/TriAIR.yaml \
   OUTPUT_DIR.EXPERIMENT_NAME food172_r101_r18
 ```
 
@@ -112,7 +116,7 @@ Override paths and settings by appending `KEY VALUE` pairs after `--cfg`:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
-  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriKD.yaml \
+  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriAIR.yaml \
   DATASETS.ROOT_DIR /path/to/food-101 \
   DISTILLER.TEACHER_MODEL_PATH /path/to/teacher.pth \
   OUTPUT_DIR.EXPERIMENT_NAME food101_custom
@@ -122,12 +126,12 @@ CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
 Multiple visible GPUs use `DataParallel`; a single GPU is the reference setup
 because relational distillation uses the batch available on each replica.
 
-For the Food101 example, outputs are written to `outputs/TriKD/food101_r101_r18/`:
+For the Food101 example, outputs are written to `outputs/TriAIR/food101_r101_r18/`:
 
 | File | Contents |
 | --- | --- |
 | `config.yaml` | Effective training configuration, including command-line overrides. |
-| `TriKD_120.pth` | Full distiller: student, teacher, and distillation modules. |
+| `TriAIR_120.pth` | Full distiller: student, teacher, and distillation modules. |
 | `student_120.pth` | Raw student state dictionary, with no `student.` prefix. |
 | `train_log.txt`, `test_acc.txt` | Training log and retrieval evaluations. |
 | `inference_speed.txt` | Parameter counts and ptflops MAC estimate; this is not a measured latency benchmark. |
@@ -141,15 +145,15 @@ Evaluate the full checkpoint produced above:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/test.py \
-  --cfg outputs/TriKD/food101_r101_r18/config.yaml
+  --cfg outputs/TriAIR/food101_r101_r18/config.yaml
 ```
 
 For another checkpoint or CPU evaluation:
 
 ```bash
 python AIR_Distiller/tools/test.py \
-  --cfg outputs/TriKD/food101_r101_r18/config.yaml \
-  --checkpoint outputs/TriKD/food101_r101_r18/TriKD_120.pth \
+  --cfg outputs/TriAIR/food101_r101_r18/config.yaml \
+  --checkpoint outputs/TriAIR/food101_r101_r18/TriAIR_120.pth \
   EXPERIMENT.DEVICE cpu
 ```
 
@@ -165,7 +169,7 @@ with `TEST.FLIP_FEATS on`; re-ranking is disabled by default.
 
 ## Configurations and ablations
 
-Each of the four TriKD datasets provides these teacher/student pairs:
+Each of the four TriAIR datasets provides these teacher/student pairs:
 
 | Configuration directory | Teacher | Student |
 | --- | --- | --- |
@@ -173,7 +177,7 @@ Each of the four TriKD datasets provides these teacher/student pairs:
 | `ResNet101_256x256_MobileNetV3_64x64` | ResNet101 | MobileNetV3-Small |
 | `Swin_Transformer_V2_Small_256x256_ResNet18_64x64` | Swin-V2-Small | ResNet18 |
 
-Use `Training_Configs/<dataset>/<pair>/TriKD.yaml` for TriKD. Food101 and
+Use `Training_Configs/<dataset>/<pair>/TriAIR.yaml` for TriAIR. Food101 and
 InShop include component ablations. See [configuration details](docs/CONFIGURATIONS.md)
 for loss weights, inherited filenames and baseline coverage.
 
@@ -203,13 +207,13 @@ python -m pip install -r requirements-optional.txt
 AIR_Distiller/
 ├── config/       # YACS defaults
 ├── dataloader/   # Dataset protocols, transforms, samplers
-├── distillers/   # TriKD and comparison methods
+├── distillers/   # TriAIR and comparison methods
 ├── models/       # Backbones and retrieval heads
 ├── processor/    # Training and retrieval evaluation
 ├── solver/       # Optimizers and learning-rate schedules
 ├── tools/        # Train/test CLIs and shared runtime helpers
 └── utils/        # Metrics, logging, optional native ranking code
-Training_Configs/ # TriKD, teacher, baseline and ablation YAML files
+Training_Configs/ # TriAIR, teacher, baseline and ablation YAML files
 docs/            # Data and reproducibility documentation
 tests/           # Synthetic regression tests
 licenses/        # Preserved upstream license notices
@@ -217,14 +221,14 @@ licenses/        # Preserved upstream license notices
 
 ## Citation and acknowledgements
 
-Please cite the accompanying **TriKD: A Unified Triple-Distillation Framework
-for Asymmetric Food Image Retrieval** manuscript. Author metadata from the
+Please cite the accompanying **TriAIR: Triple-Level Knowledge Distillation
+for Cross-Resolution Asymmetric Food Image Retrieval** manuscript. Author metadata from the
 manuscript is recorded in [CITATION.cff](CITATION.cff); a publication DOI has
 not been supplied with this release.
 
-TriKD builds on [D3still / AIR-Distiller](https://github.com/SCY-X/D3still),
+TriAIR builds on [D3still / AIR-Distiller](https://github.com/SCY-X/D3still),
 including its D3still and UGD implementations. The upstream framework also
 acknowledges [mdistiller / DKD](https://github.com/megvii-research/mdistiller).
-Original TriKD contributions use the [MIT license](LICENSE). Upstream attribution
+Original TriAIR contributions use the [MIT license](LICENSE). Upstream attribution
 and the outstanding D3still license-notice item are documented in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

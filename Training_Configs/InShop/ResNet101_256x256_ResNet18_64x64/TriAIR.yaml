@@ -1,13 +1,13 @@
 EXPERIMENT:
   CUDA_AMP: true
 OUTPUT_DIR:
-  ROOT_PATH: ./outputs/TriKD/ablations
-  EXPERIMENT_NAME: InShop_TriKD_A1_Lf_ResNet101_256x256_ResNet18_64x64_seed2024
+  ROOT_PATH: ./outputs/TriAIR
+  EXPERIMENT_NAME: InShop_TriAIR_Directional_ResNet101_256x256_ResNet18_64x64_TeacherClassifierLSD_seed2024
 DATASETS:
   NAMES: InShop
   ROOT_DIR: ./data
 DISTILLER:
-  TYPE: TriKD
+  TYPE: TriAIR
   TEACHER_NAME: ResNet101
   TEACHER_MODEL_PATH: ./checkpoints/InShop_Teachers/InShop_ResNet101_256x256_81.80_95.25.pth
   STUDENT_NAME: ResNet18
@@ -17,18 +17,18 @@ D3:
   ALPHA: 1.0
   BETA: 1.0
   GAMMA: 1.0
-  KD_WEIGHT: 0.0
+  KD_WEIGHT: 2.0
 UGD:
   DISTILLATION_LAYER: 3
   ALPHA: 2.0
-  BETA: 0.0
+  BETA: 2.0
   KD_WEIGHT: 1.0
   RA_ENABLED: true
   RA_MODE: directional
   RA_DIRECTION_RHO: 0.25
   RA_USE_CLASS_MASK: true
   RA_ANTIALIAS: true
-  LSD_WEIGHT: 0.0
+  LSD_WEIGHT: 0.1
   LSD_TAU: 2.0
 INPUT:
   STUDENT_SIZE_TRAIN:

@@ -9,7 +9,7 @@ from tools.common import build_distiller, configure_device, load_checkpoint, loa
 
 
 def main():
-    args = make_parser("TriKD asymmetric image retrieval evaluation", evaluation=True).parse_args()
+    args = make_parser("TriAIR asymmetric image retrieval evaluation", evaluation=True).parse_args()
     config = load_config(args)
     device = configure_device(config)
 

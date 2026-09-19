@@ -1,26 +1,26 @@
 EXPERIMENT:
   CUDA_AMP: true
 OUTPUT_DIR:
-  ROOT_PATH: ./outputs/TriKD
-  EXPERIMENT_NAME: Food172_TriKD_Directional_ResNet101_256x256_ResNet18_64x64_TeacherClassifierLSD_seed2024
+  ROOT_PATH: ./outputs/TriAIR
+  EXPERIMENT_NAME: InShop_TriAIR_Directional_ResNet101_256x256_MobileNetV3_Small_64x64_TeacherClassifierLSD_seed2024
 DATASETS:
-  NAMES: Food172
-  ROOT_DIR: ./data/food-172
+  NAMES: InShop
+  ROOT_DIR: ./data
 DISTILLER:
-  TYPE: TriKD
+  TYPE: TriAIR
   TEACHER_NAME: ResNet101
-  TEACHER_MODEL_PATH: ./checkpoints/Food172/ResNet101_256x256.pth
-  STUDENT_NAME: ResNet18
+  TEACHER_MODEL_PATH: ./checkpoints/InShop_Teachers/InShop_ResNet101_256x256_81.80_95.25.pth
+  STUDENT_NAME: MobileNetV3_Small
   STUDENT_PRETRAIN_PATH: ''
 D3:
   TOPK: 10
-  ALPHA: 1.0
-  BETA: 1.0
-  GAMMA: 1.0
-  KD_WEIGHT: 2.0
+  ALPHA: 200.0
+  BETA: 10.0
+  GAMMA: 2.0
+  KD_WEIGHT: 1.0
 UGD:
   DISTILLATION_LAYER: 3
-  ALPHA: 2.0
+  ALPHA: 5.0
   BETA: 2.0
   KD_WEIGHT: 1.0
   RA_ENABLED: true

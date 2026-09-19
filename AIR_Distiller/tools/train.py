@@ -1,4 +1,4 @@
-"""Train a supervised teacher/student or a TriKD distillation model."""
+"""Train a supervised teacher/student or a TriAIR distillation model."""
 
 from pathlib import Path
 import random
@@ -23,7 +23,7 @@ def set_seed(seed):
 
 
 def main():
-    args = make_parser("TriKD asymmetric image retrieval training").parse_args()
+    args = make_parser("TriAIR asymmetric image retrieval training").parse_args()
     config = load_config(args)
     device = configure_device(config, training=True)
 

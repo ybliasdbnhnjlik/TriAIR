@@ -1,15 +1,15 @@
 EXPERIMENT:
   CUDA_AMP: true
 OUTPUT_DIR:
-  ROOT_PATH: ./outputs/TriKD
-  EXPERIMENT_NAME: Food172_TriKD_Directional_Swin_Transformer_V2_Small_256x256_ResNet18_64x64_TeacherClassifierLSD_seed2024
+  ROOT_PATH: ./outputs/TriAIR
+  EXPERIMENT_NAME: InShop_TriAIR_Directional_Swin_Transformer_V2_Small_256x256_ResNet18_64x64_TeacherClassifierLSD_seed2024
 DATASETS:
-  NAMES: Food172
-  ROOT_DIR: ./data/food-172
+  NAMES: InShop
+  ROOT_DIR: ./data
 DISTILLER:
-  TYPE: TriKD
+  TYPE: TriAIR
   TEACHER_NAME: Swin_Transformer_V2_Small
-  TEACHER_MODEL_PATH: ./checkpoints/Food172/Swin_Transformer_V2_Small_256x256.pth
+  TEACHER_MODEL_PATH: ./checkpoints/InShop_Teachers/InShop_Swin_Transformer_Small_256x256_81.19_95.20.pth
   STUDENT_NAME: ResNet18
   STUDENT_PRETRAIN_PATH: ''
 D3:

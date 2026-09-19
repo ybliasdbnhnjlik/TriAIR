@@ -1,7 +1,10 @@
 # Reproducibility and release scope
 
-This release uses `TriKD` for the implementation class, method identifier and
+This release uses `TriAIR` for the implementation class, method identifier and
 configuration filenames, with directional RA and teacher-classifier LSD settings.
+TriAIR is the new paper and project name for the original TriKD release.
+The `TriKD` method identifier and Python module remain compatibility aliases
+for saved configurations and existing imports. New runs use `TriAIR` names.
 Core loss formulas, default weights,
 backbone feature interfaces and existing query/gallery protocols are preserved.
 Full benchmark training has not been repeated as part of the code cleanup;
@@ -27,7 +30,7 @@ no new retrieval accuracy claims are introduced in the README.
 
 The supplied food ResNet101 teachers use 90 epochs and the Swin-V2-Small
 teachers use 25 epochs, matching the saved supervised YAML files. The
-ResNet101 supervised files set `STUDENT_LAST_STRIDE: 2`; the main TriKD
+ResNet101 supervised files set `STUDENT_LAST_STRIDE: 2`; the main TriAIR
 configurations inherit `TEACHER_LAST_STRIDE: 1` when loading the teacher, as
 in the supplied research implementation. These values are exposed rather
 than silently unified. The weight shapes are compatible, but the stride

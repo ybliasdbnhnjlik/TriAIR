@@ -1,8 +1,8 @@
 # Third-party code and attribution
 
-TriKD extends [SCY-X/D3still](https://github.com/SCY-X/D3still), including its
+TriAIR extends [SCY-X/D3still](https://github.com/SCY-X/D3still), including its
 AIR-Distiller framework and D3still/UGD implementations. This release retains
-the upstream module names and source-level credits. TriKD's additions are
+the upstream module names and source-level credits. TriAIR's additions are
 covered by [LICENSE](LICENSE); that notice does not replace upstream ownership.
 
 The upstream D3still README declares MIT licensing. On 2026-09-16, its linked

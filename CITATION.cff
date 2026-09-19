@@ -1,7 +1,8 @@
 cff-version: 1.2.0
-message: "Please cite the accompanying TriKD manuscript when using this code."
+message: "Please cite the accompanying TriAIR manuscript when using this code."
 type: software
-title: "TriKD: A Unified Triple-Distillation Framework for Asymmetric Food Image Retrieval"
+title: "TriAIR: Triple-Level Knowledge Distillation for Cross-Resolution Asymmetric Food Image Retrieval"
+repository-code: "https://github.com/ybliasdbnhnjlik/TriAIR"
 authors:
   - family-names: Yang
     given-names: Bolin

@@ -12,7 +12,7 @@ import torch.nn.functional as F
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "AIR_Distiller"))
 
 from config import cfg
-from distillers.TriKD import TriKD, degradation_direction_distance, teacher_classifier_lsd_loss
+from distillers.TriAIR import TriAIR, degradation_direction_distance, teacher_classifier_lsd_loss
 from models.utils.class_block import ClassBlock
 from processor.trainer import BaseTrainer, KDTrainer
 
@@ -38,13 +38,13 @@ class ToyModel(nn.Module):
 def make_distiller(mode="scalar"):
     config = cfg.clone()
     config.EXPERIMENT.CUDA_AMP = False
-    config.DISTILLER.TYPE = "TriKD"
+    config.DISTILLER.TYPE = "TriAIR"
     config.DISTILLER.STUDENT_NAME = "ResNet18"
     config.UGD.RA_ENABLED = True
     config.UGD.RA_MODE = mode
     config.UGD.RA_USE_CLASS_MASK = False
     config.D3.TOPK = 4
-    return TriKD(ToyModel(), ToyModel(), config).train(), config
+    return TriAIR(ToyModel(), ToyModel(), config).train(), config
 
 
 class DistillationTests(unittest.TestCase):
@@ -160,11 +160,11 @@ class DistillationTests(unittest.TestCase):
         config.UGD.R_LSD_WEIGHT = 0.25
         config.UGD.R_LSD_TAU = 3.0
         config.UGD.R_LSD_TOPK = 1  # No candidate selection in the new LSD.
-        model = TriKD(ToyModel(), ToyModel(), config)
+        model = TriAIR(ToyModel(), ToyModel(), config)
         self.assertEqual((model.lsd_weight, model.lsd_tau), (0.25, 3.0))
         config.UGD.LSD_WEIGHT = 0.1
         config.UGD.LSD_TAU = 2.0
-        model = TriKD(ToyModel(), ToyModel(), config)
+        model = TriAIR(ToyModel(), ToyModel(), config)
         self.assertEqual((model.lsd_weight, model.lsd_tau), (0.1, 2.0))
 
     def test_bn_buffers_modes_and_gradients(self):
@@ -172,7 +172,7 @@ class DistillationTests(unittest.TestCase):
         module[1].eval()
         before = copy.deepcopy(module.state_dict())
         image = torch.randn(8, 4, requires_grad=True)
-        result = TriKD._forward_with_batch_stats_no_update(module, image)
+        result = TriAIR._forward_with_batch_stats_no_update(module, image)
         result.square().mean().backward()
         for name, value in module.state_dict().items():
             torch.testing.assert_close(value, before[name], rtol=0, atol=0)
@@ -183,19 +183,19 @@ class DistillationTests(unittest.TestCase):
     def test_bn_modes_restored_on_exception(self):
         module = nn.Sequential(nn.BatchNorm1d(4), nn.Linear(5, 2)).eval()
         with self.assertRaises(RuntimeError):
-            TriKD._forward_with_batch_stats_no_update(module, torch.randn(8, 4))
+            TriAIR._forward_with_batch_stats_no_update(module, torch.randn(8, 4))
         self.assertFalse(module[0].training)
         self.assertTrue(module[0].track_running_stats)
 
     def test_weight_normalization_and_zero_fallback(self):
         valid = torch.tensor([True, True, False])
         raw = torch.tensor([0.2, 0.8, 0.99])
-        result = TriKD._budget_normalized_weight(raw, valid)
+        result = TriAIR._budget_normalized_weight(raw, valid)
         self.assertAlmostEqual(result[valid].mean().item(), 1.0)
         self.assertGreater(result[1], result[0])
         for weights, mask in ((torch.zeros(3), valid), (raw, ~torch.ones(3).bool())):
             torch.testing.assert_close(
-                TriKD._budget_normalized_weight(weights, mask), torch.ones(3)
+                TriAIR._budget_normalized_weight(weights, mask), torch.ones(3)
             )
 
     def test_antialias_switch(self):
@@ -463,16 +463,16 @@ class DistillationTests(unittest.TestCase):
     def test_directional_config_validation_and_legacy_default(self):
         config = cfg.clone()
         config.DISTILLER.STUDENT_NAME = "ResNet18"
-        self.assertEqual(TriKD(ToyModel(), ToyModel(), config).ra_mode, "scalar")
+        self.assertEqual(TriAIR(ToyModel(), ToyModel(), config).ra_mode, "scalar")
         config.UGD.RA_MODE = "directional"
         for rho in (-0.1, 1.0, float("nan")):
             config.UGD.RA_DIRECTION_RHO = rho
             with self.assertRaises(ValueError):
-                TriKD(ToyModel(), ToyModel(), config)
+                TriAIR(ToyModel(), ToyModel(), config)
 
     def test_food172_configs(self):
         root = Path(__file__).resolve().parents[1]
-        paths = list((root / "Training_Configs" / "Food172").glob("*/TriKD.yaml"))
+        paths = list((root / "Training_Configs" / "Food172").glob("*/TriAIR.yaml"))
         self.assertEqual(len(paths), 3)
         for path in paths:
             config = cfg.clone()

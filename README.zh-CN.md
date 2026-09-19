@@ -1,10 +1,12 @@
-# TriKD
+# TriAIR
 
-**面向非对称食物图像检索的统一三重蒸馏框架**
+**面向跨分辨率非对称食物图像检索的三层次知识蒸馏**
+
+论文标题：**TriAIR: Triple-Level Knowledge Distillation for Cross-Resolution Asymmetric Food Image Retrieval**。
 
 [English](README.md) · [数据准备](docs/DATASETS.md) · [配置说明](docs/CONFIGURATIONS.md) · [复现说明](docs/REPRODUCIBILITY.md)
 
-TriKD 使用低分辨率学生网络编码查询图像，使用冻结的高分辨率教师网络
+TriAIR 使用低分辨率学生网络编码查询图像，使用冻结的高分辨率教师网络
 编码图库。训练时结合三个蒸馏分支，以及配置中的交叉熵和 triplet 损失：
 
 | 论文模块 | 作用 | 代码对应 |
@@ -13,10 +15,14 @@ TriKD 使用低分辨率学生网络编码查询图像，使用冻结的高分�
 | DMGD：方向性中层引导蒸馏 | 对齐全局和语义有效局部特征，并沿教师降采样变化方向适度放松局部对齐 | `ugd_loss`、`UGD.RA_MODE: directional` |
 | LSD：Logit 标准化蒸馏 | 在共享冻结教师分类器下对齐标准化类别分布 | `teacher_classifier_lsd_loss`、`UGD.LSD_*` |
 
-核心实现位于 [TriKD.py](AIR_Distiller/distillers/TriKD.py)，类名和配置中的
-`DISTILLER.TYPE` 统一使用 **`TriKD`**。
+核心实现位于 [TriAIR.py](AIR_Distiller/distillers/TriAIR.py)，类名和配置中的
+`DISTILLER.TYPE` 统一使用 **`TriAIR`**。
 
-发布版提供 Food101、Food172、InShop、SOP 的 TriKD 配置，保留 AIR-Distiller
+TriAIR 的早期发布名称为 TriKD。已有配置中的 `DISTILLER.TYPE: TriKD`
+及 `distillers.TriKD` 导入仍可使用；新配置采用 `TriAIR.yaml`，输出目录为
+`outputs/TriAIR/`。
+
+发布版提供 Food101、Food172、InShop、SOP 的 TriAIR 配置，保留 AIR-Distiller
 对比方法，以及 CUB200、MSMT17 的原有基线配置。模型权重和数据集需单独准备。
 
 ## 安装
@@ -66,7 +72,7 @@ Food101：ResNet101（256×256）→ ResNet18（64×64）。
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
-  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriKD.yaml \
+  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriAIR.yaml \
   OUTPUT_DIR.EXPERIMENT_NAME food101_r101_r18
 ```
 
@@ -77,7 +83,7 @@ CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
-  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriKD.yaml \
+  --cfg Training_Configs/Food101/ResNet101_256x256_ResNet18_64x64/TriAIR.yaml \
   DATASETS.ROOT_DIR /path/to/food-101 \
   DISTILLER.TEACHER_MODEL_PATH /path/to/teacher.pth \
   OUTPUT_DIR.EXPERIMENT_NAME food101_custom
@@ -92,26 +98,26 @@ CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/train.py \
 
 ## 评测与输出
 
-上述 Food101 示例的输出目录为 `outputs/TriKD/food101_r101_r18/`。
+上述 Food101 示例的输出目录为 `outputs/TriAIR/food101_r101_r18/`。
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python AIR_Distiller/tools/test.py \
-  --cfg outputs/TriKD/food101_r101_r18/config.yaml
+  --cfg outputs/TriAIR/food101_r101_r18/config.yaml
 ```
 
 指定权重并在 CPU 评测：
 
 ```bash
 python AIR_Distiller/tools/test.py \
-  --cfg outputs/TriKD/food101_r101_r18/config.yaml \
-  --checkpoint outputs/TriKD/food101_r101_r18/TriKD_120.pth \
+  --cfg outputs/TriAIR/food101_r101_r18/config.yaml \
+  --checkpoint outputs/TriAIR/food101_r101_r18/TriAIR_120.pth \
   EXPERIMENT.DEVICE cpu
 ```
 
 | 输出 | 含义 |
 | --- | --- |
 | `config.yaml` | 包含命令行覆盖项的完整训练配置 |
-| `TriKD_120.pth` | 学生、教师及蒸馏模块的完整权重，供评测使用 |
+| `TriAIR_120.pth` | 学生、教师及蒸馏模块的完整权重，供评测使用 |
 | `student_120.pth` | 去除 `student.` 前缀的独立学生权重 |
 | `train_log.txt`、`test_acc.txt` | 训练日志及检索评测记录 |
 | `config.eval.yaml`、`test_log.txt` | 独立评测的配置与日志 |
@@ -139,9 +145,9 @@ python -m pip install -r requirements-optional.txt
 
 ## 引用与许可
 
-请引用配套 TriKD 稿件，作者信息见 [CITATION.cff](CITATION.cff)。本次整理
+请引用配套 TriAIR 稿件，作者信息见 [CITATION.cff](CITATION.cff)。本次整理
 未重新运行完整 benchmark，README 不引入新的性能结果。
 
 本项目基于 [D3still / AIR-Distiller](https://github.com/SCY-X/D3still)，并保留
-其上游来源说明。TriKD 新增代码采用 [MIT](LICENSE) 许可。第三方许可及上游
+其上游来源说明。TriAIR 新增代码采用 [MIT](LICENSE) 许可。第三方许可及上游
 D3still 缺失的版权声明事项记录在 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

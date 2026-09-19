@@ -9,6 +9,7 @@ from .ROP import ROP
 from .RAML import RAML
 from .D3 import D3
 from .UGD import UGD
+from .TriAIR import TriAIR
 from .TriKD import TriKD
 
 distiller_dict = {
@@ -23,5 +24,6 @@ distiller_dict = {
     "RAML": RAML,
     "D3": D3,
     "UGD": UGD,
-    "TriKD": TriKD,
+    "TriAIR": TriAIR,
+    "TriKD": TriKD,  # Compatibility with saved configs from the original release.
 }

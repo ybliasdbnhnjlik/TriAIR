@@ -153,7 +153,7 @@ _C.UGD.RA_ACCESSIBILITY_SPACE = "backbone"
 # saved R-LSD YAML files remain loadable without silently changing their scale.
 _C.UGD.LSD_WEIGHT = None
 _C.UGD.LSD_TAU = None
-# Legacy keys only: TriKD no longer uses candidate-list R-LSD or its Top-K.
+# Legacy keys only: TriAIR no longer uses candidate-list R-LSD or its Top-K.
 _C.UGD.R_LSD_WEIGHT = 0.1
 _C.UGD.R_LSD_TOPK = 10
 _C.UGD.R_LSD_TAU = 2.0

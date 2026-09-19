@@ -1,4 +1,20 @@
-# Release validation — 2026-09-16
+# Release validation
+
+## Paper and project rename — 2026-09-19
+
+The paper title and project name were updated to **TriAIR: Triple-Level
+Knowledge Distillation for Cross-Resolution Asymmetric Food Image Retrieval**.
+The checks below use the Python 3.10 environment recorded in the original
+release validation.
+
+- All 42 existing unit tests passed with CUDA available and the NumPy evaluator;
+  this includes loading all 199 public configurations.
+- Legacy `TriKD` imports and the `DISTILLER.TYPE: TriKD` identifier resolve to
+  the same implementation as `TriAIR`.
+- The English and Chinese READMEs and `CITATION.cff` match the manuscript title.
+- Python syntax and local documentation links were checked after the file renames.
+
+## Original release — 2026-09-16
 
 The release was checked with Python 3.10.20, PyTorch 2.4.1, torchvision 0.19.1,
 timm 1.0.28 and NumPy 2.2.6. Runtime versions are recorded in `requirements.txt`.

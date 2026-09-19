@@ -20,5 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-This notice covers original TriKD contributions. Third-party code retains
+TriAIR was originally released as TriKD.
+
+This notice covers original TriKD/TriAIR contributions. Third-party code retains
 its original notices and terms; see THIRD_PARTY_NOTICES.md and licenses/.

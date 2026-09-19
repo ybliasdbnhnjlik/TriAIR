@@ -24,7 +24,7 @@ from processor import trainer_dict
 from processor.inferencer import inference
 from processor.trainer import KDTrainer
 from tools.common import build_distiller, configure_device, load_checkpoint, load_config, load_teacher_checkpoint
-from test_trikd import ToyModel, make_distiller
+from test_triair import ToyModel, make_distiller
 
 
 class ReleaseRuntimeTests(unittest.TestCase):
@@ -71,7 +71,7 @@ class ReleaseRuntimeTests(unittest.TestCase):
 
     def test_evaluation_does_not_initialize_pretrained_models(self):
         config = cfg.clone()
-        config.DISTILLER.TYPE = "TriKD"
+        config.DISTILLER.TYPE = "TriAIR"
         config.DISTILLER.TEACHER_MODEL_PATH = "missing-teacher.pth"
         config.DISTILLER.STUDENT_PRETRAIN_PATH = "missing-imagenet.pth"
         calls = []
@@ -88,7 +88,7 @@ class ReleaseRuntimeTests(unittest.TestCase):
 
     def test_training_rejects_missing_teacher(self):
         config = cfg.clone()
-        config.DISTILLER.TYPE = "TriKD"
+        config.DISTILLER.TYPE = "TriAIR"
         config.DISTILLER.TEACHER_MODEL_PATH = "missing-teacher.pth"
         with self.assertRaisesRegex(FileNotFoundError, "Teacher checkpoint"):
             build_distiller(config, num_classes=4, training=True)
@@ -160,7 +160,7 @@ class ReleaseRuntimeTests(unittest.TestCase):
             self.assertEqual(next(iter(query))[0].shape[1:], (3, 64, 64))
 
     def test_filename_ids_ignore_digits_in_parent_directories(self):
-        with tempfile.TemporaryDirectory(prefix="trikd_d3_data_") as folder:
+        with tempfile.TemporaryDirectory(prefix="triair_d3_data_") as folder:
             for split in ("train", "query", "gallery"):
                 directory = Path(folder) / "InShop" / split
                 directory.mkdir(parents=True)
